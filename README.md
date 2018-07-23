@@ -14,16 +14,19 @@ Put `[lein-ver "1.0.1"]`
 into the `:plugins` vector of your `:user` profile.
 If you're on Leiningen 1.x do `lein plugin install lein-ver 1.0.1`.
 
-If you have multiple source-paths in you project and/or want to configure 
+If you have multiple source-paths in you project and/or want to configure
 the path used by lein-var when storing version.clj, add this to you `project.clj`:
 
 	:lein-ver {:src-path "src" :project-name "my-name"}
-
 
 `lein-ver` is used to manage a project's version.
 It stores this information in two places:
 `project.clj` and `resources/VERSION`.
 The version found in `resources/VERSION` is considered authoritative.
+If you need to override this for some reason, you can do that by setting
+
+	:lein-ver {:version-file "resources/lein-ver-version"}
+
 While, `project.clj` is a clojure file,
 and should be able to load version information from `resources/VERSION`,
 I found that not all tools treat it as such.

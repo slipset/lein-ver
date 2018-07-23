@@ -9,6 +9,13 @@
 (def ^:private version-file-path
   (str "resources" File/separator "VERSION"))
 
+
+(defn version-file
+  "Return the version file that's defined in project.clj.
+  This is found under `[:lein-ver :version-file]`"
+  [project]
+  (get-in project [:lein-ver :version-file]))
+
 (defn- report-missing-version-file
   "Print an error message and abort."
   []
@@ -56,7 +63,7 @@
   "Returns the version according to the file resources/VERSION or nil if the
   file does not exist."
   [project]
-  (let [version-file (file (:root project) version-file-path)]
+  (let [version-file (file (:root project) (or (version-file project) version-file-path))]
     (when (.exists version-file)
       (with-open [rdr (reader version-file)]
         (binding [*read-eval* false]
@@ -102,7 +109,7 @@
 (defn- write-version-file
   "Writes the given version to the file resources/VERSION."
   [project version]
-  (let [version-file (file (:root project) version-file-path)
+  (let [version-file (file (:root project) (or (version-file project) version-file-path))
         parent (.getParentFile version-file)
         git-head (io/file (:root project) ".git")]
     (when-not (.exists parent) (.mkdirs parent))
