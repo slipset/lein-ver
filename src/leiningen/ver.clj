@@ -32,8 +32,11 @@
 (defn- version-template
   "Return the template file as a string, with variables replaced."
   [project]
-  (let [template (slurp (resource "version.clj.tpl"))]
-    (.replace template "{name}" (get-in project [:lein-ver :project-name] (ns-to-path (:name project))))))
+  (-> "version.clj.tpl"
+      resource
+      slurp
+      (.replace "{name}" (get-in project [:lein-ver :project-name] (ns-to-path (:name project))))
+      (.replace "{version-file}" (str "\"" (or (version-file project) version-file-path) "\""))))
 
 ; Semver regular expression borrowed from:
 ; https://github.com/mojombo/semver/issues/32#issuecomment-8380547
